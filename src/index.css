@@ -55,6 +55,18 @@
   padding: 0;
 }
 
+/* Computers get the whole page at 175%, as if browser-zoomed. Below 1120px
+   the page isn't zoomed, so the zoomed layout is never narrower than the
+   phone breakpoint (1120 / 1.75 = 640). Layout breakpoints wider than 640px
+   are written in real window widths that give the same effective width:
+   effective = real / 1.75 when zoomed. Scripts that measure the page divide
+   by this zoom (see src/zoom.ts). */
+@media (min-width: 1120px) {
+  html {
+    zoom: 1.75;
+  }
+}
+
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
@@ -315,7 +327,6 @@ ul {
 /* Hero */
 .eyebrow,
 .date,
-.section-label,
 .stack {
   font-family: var(--mono);
   font-size: 11.5px;
@@ -336,8 +347,9 @@ ul {
 }
 
 /* On wide screens, widen the hero evenly on both sides so the name-to-photo
-   block is centered on the page, with room for a larger photo. */
-@media (min-width: 1000px) {
+   block is centered on the page, with room for a larger photo.
+   (Effective width >= 1000px: unzoomed 1000-1119px, or zoomed from 1750px.) */
+@media (min-width: 1000px) and (max-width: 1119px), (min-width: 1750px) {
   .hero {
     grid-template-columns: 1fr 270px;
     gap: 56px;
@@ -447,17 +459,21 @@ a:hover .arrow {
 }
 
 /* Sections */
+/* Each section's heading sits above its content. */
 .section {
-  display: grid;
-  grid-template-columns: 140px 1fr;
-  gap: 24px;
   margin-top: 88px;
   padding-top: 28px;
   border-top: 1px solid var(--rule);
 }
 
 .section-label {
-  padding-top: 5px;
+  margin: 0 0 22px;
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 38px;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: var(--ink);
 }
 
 .list {
@@ -707,15 +723,17 @@ h3 {
   margin-top: 8px;
 }
 
-@media (min-width: 1000px) {
+/* Effective width >= 1000px (see the zoom note at the top). */
+@media (min-width: 1000px) and (max-width: 1119px), (min-width: 1750px) {
   .featured-wide {
     margin-left: -100px;
     margin-right: -100px;
   }
 }
 
-/* Room for the notes column beside the code */
-@media (min-width: 1240px) {
+/* Room for the notes column beside the code. Effective width >= 1240px,
+   which only zoomed windows reach (1240 x 1.75 = 2170px). */
+@media (min-width: 2170px) {
   .featured-wide {
     margin-left: -252px;
     margin-right: -252px;
@@ -1562,8 +1580,9 @@ h3 {
   }
 }
 
-/* Narrow: stack the two sides, name each block's destination instead of curves */
-@media (max-width: 820px) {
+/* Narrow: stack the two sides, name each block's destination instead of curves.
+   Effective width <= 820px: unzoomed up to 820px, or zoomed 1120-1435px. */
+@media (max-width: 820px), (min-width: 1120px) and (max-width: 1435px) {
   .split {
     --st-wires: 0;
     grid-template-columns: 1fr;
@@ -2579,7 +2598,8 @@ h3 {
     padding-top: 20px;
   }
   .section-label {
-    padding-top: 0;
+    margin-bottom: 16px;
+    font-size: 30px;
   }
   .list {
     gap: 26px;

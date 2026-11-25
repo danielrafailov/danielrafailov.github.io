@@ -1,3 +1,4 @@
+import { pageZoom } from "../zoom";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode, type RefObject } from "react";
 
 /**
@@ -82,10 +83,18 @@ export function Tour({
       setRect(null);
       return;
     }
+    // Measured in screen pixels; stored in CSS pixels for positioning.
+    const z = pageZoom();
     const r = el.getBoundingClientRect();
     const base = root.getBoundingClientRect();
-    setRootWidth(base.width);
-    setRect({ top: r.top - base.top, left: r.left - base.left, width: r.width, height: r.height, step: step ?? -1 });
+    setRootWidth(base.width / z);
+    setRect({
+      top: (r.top - base.top) / z,
+      left: (r.left - base.left) / z,
+      width: r.width / z,
+      height: r.height / z,
+      step: step ?? -1,
+    });
   }, [rootRef, current, step]);
 
   useLayoutEffect(() => {
@@ -122,16 +131,19 @@ export function Tour({
     const card = cardRef.current;
     if (!root || !card) return;
     scrolledFor.current = step;
+    // Work in screen pixels, which is what window scrolling uses.
+    const z = pageZoom();
+    const nav = NAV_HEIGHT * z;
     const base = root.getBoundingClientRect();
-    const cardTop = base.top + cardTopRef.current;
-    const cardBottom = cardTop + card.offsetHeight;
-    const top = Math.min(base.top + rect.top, cardTop) - PAD;
-    const bottom = Math.max(base.top + rect.top + rect.height, cardBottom) + PAD;
+    const cardTop = base.top + cardTopRef.current * z;
+    const cardBottom = cardTop + card.offsetHeight * z;
+    const top = Math.min(base.top + rect.top * z, cardTop) - PAD * z;
+    const bottom = Math.max(base.top + (rect.top + rect.height) * z, cardBottom) + PAD * z;
     const viewH = window.innerHeight;
-    if (top >= NAV_HEIGHT + 8 && bottom <= viewH - 8) return;
+    if (top >= nav + 8 && bottom <= viewH - 8) return;
     const span = bottom - top;
-    const room = viewH - NAV_HEIGHT;
-    const delta = span > room - 16 ? top - NAV_HEIGHT - 16 : top - (NAV_HEIGHT + (room - span) / 2);
+    const room = viewH - nav;
+    const delta = span > room - 16 ? top - nav - 16 : top - (nav + (room - span) / 2);
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     window.scrollBy({ top: delta, behavior: reduce ? "auto" : "smooth" });
   }, [step, rect, rootRef]);

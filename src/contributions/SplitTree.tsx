@@ -1,3 +1,4 @@
+import { pageZoom } from "../zoom";
 import { useLayoutEffect, useRef, useState } from "react";
 import { OLD_FILE, newTree, oldBlocks, sharedModules, type NewNode } from "./split1822";
 
@@ -53,16 +54,17 @@ export function SplitTree() {
         return;
       }
       const base = root.getBoundingClientRect();
+      const zoom = pageZoom();
       const next: typeof paths = [];
       oldBlocks.forEach((b, i) => {
         if (!b.to) return;
         const a = root.querySelector(`[data-block="${i}"]`)?.getBoundingClientRect();
         const z = root.querySelector(`[data-node="${b.to}"]`)?.getBoundingClientRect();
         if (!a || !z) return;
-        const x1 = a.right - base.left;
-        const y1 = a.top + a.height / 2 - base.top;
-        const x2 = z.left - base.left;
-        const y2 = z.top + Math.min(z.height / 2, 16) - base.top;
+        const x1 = (a.right - base.left) / zoom;
+        const y1 = (a.top + a.height / 2 - base.top) / zoom;
+        const x2 = (z.left - base.left) / zoom;
+        const y2 = (z.top + Math.min(z.height / 2, 16 * zoom) - base.top) / zoom;
         const dx = (x2 - x1) / 2;
         next.push({ from: i, to: b.to, d: `M${x1} ${y1} C${x1 + dx} ${y1} ${x2 - dx} ${y2} ${x2} ${y2}` });
       });

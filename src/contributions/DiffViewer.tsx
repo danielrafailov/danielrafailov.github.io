@@ -1,3 +1,4 @@
+import { pageZoom } from "../zoom";
 import { Fragment, useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
 import type { DiffFile, DiffLine } from "./diffs";
 import { highlight, langFor } from "./highlight";
@@ -10,7 +11,8 @@ import { highlight, langFor } from "./highlight";
 export type Note = { lines: number[]; side?: "old"; text: string };
 
 // Wide enough for a notes column beside the code; below this, notes go inline.
-const RAIL_QUERY = "(min-width: 1240px)";
+// Effective width >= 1240px; only zoomed windows get there (1240 x 1.75).
+const RAIL_QUERY = "(min-width: 2170px)";
 const PHONE_QUERY = "(max-width: 640px)";
 
 /** Split a line into its indentation (in columns) and the code after it. */
@@ -137,7 +139,7 @@ export function DiffViewer({ files, notes }: { files: DiffFile[]; notes: Record<
     if (first) {
       // Only jump when the first note would start out of view, and leave some
       // lines above it for context.
-      const offset = first.getBoundingClientRect().top - box.getBoundingClientRect().top;
+      const offset = (first.getBoundingClientRect().top - box.getBoundingClientRect().top) / pageZoom();
       if (offset > box.clientHeight - 120) box.scrollTop = Math.max(0, offset - 140);
     }
     box.scrollLeft = 0;
@@ -172,8 +174,9 @@ export function DiffViewer({ files, notes }: { files: DiffFile[]; notes: Record<
       const railEl = railRef.current;
       const box = boxRef.current;
       if (!railEl || !box) return;
+      const z = pageZoom();
       const boxRect = box.getBoundingClientRect();
-      railEl.style.height = `${boxRect.height}px`;
+      railEl.style.height = `${boxRect.height / z}px`;
       let floor = 0;
       fileNotes.forEach((_, i) => {
         const row = markerRows.current.get(i);
@@ -184,7 +187,7 @@ export function DiffViewer({ files, notes }: { files: DiffFile[]; notes: Record<
         const visible = rowRect.bottom > boxRect.top + 8 && rowRect.top < boxRect.bottom - 8;
         el.classList.toggle("is-out", !visible);
         if (!visible) return;
-        const rowY = rowRect.top + rowRect.height / 2 - boxRect.top;
+        const rowY = (rowRect.top + rowRect.height / 2 - boxRect.top) / z;
         const top = Math.max(rowY - NOTE_ANCHOR, floor);
         el.style.top = `${top}px`;
         // How far the note was pushed below its line; the connector spans it.
@@ -225,7 +228,8 @@ export function DiffViewer({ files, notes }: { files: DiffFile[]; notes: Record<
       const el = viewerRef.current;
       if (!el) return;
       const top = el.getBoundingClientRect().top;
-      if (top < 64) window.scrollBy({ top: top - 80 });
+      const z = pageZoom();
+      if (top < 64 * z) window.scrollBy({ top: top - 80 * z });
     });
   };
 
