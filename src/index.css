@@ -350,10 +350,14 @@ ul {
    block is centered on the page, with room for a larger photo.
    (Effective width >= 1000px: unzoomed 1000-1119px, or zoomed from 1750px.) */
 @media (min-width: 1000px) and (max-width: 1119px), (min-width: 1750px) {
+  /* The whole page widens (not just the hero), so section headings line up
+     with the name and intro. */
+  .page {
+    max-width: 920px;
+  }
   .hero {
     grid-template-columns: 1fr 270px;
     gap: 56px;
-    margin: 0 -100px;
   }
 }
 
@@ -723,20 +727,12 @@ h3 {
   margin-top: 8px;
 }
 
-/* Effective width >= 1000px (see the zoom note at the top). */
-@media (min-width: 1000px) and (max-width: 1119px), (min-width: 1750px) {
-  .featured-wide {
-    margin-left: -100px;
-    margin-right: -100px;
-  }
-}
-
 /* Room for the notes column beside the code. Effective width >= 1240px,
    which only zoomed windows reach (1240 x 1.75 = 2170px). */
 @media (min-width: 2170px) {
   .featured-wide {
-    margin-left: -252px;
-    margin-right: -252px;
+    margin-left: -152px;
+    margin-right: -152px;
   }
 }
 
@@ -2364,6 +2360,7 @@ h3 {
 }
 
 .travel-map {
+  max-width: 600px;
   margin: 14px 0 0;
 }
 
