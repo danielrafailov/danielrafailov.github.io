@@ -33,7 +33,7 @@ export const experience: Experience[] = [
   {
     role: "Software Developer Intern",
     org: "Courseography · U of T Computer Science",
-    logos: ["/logos/sds.png", "/logos/uoft-cs.webp"],
+    logos: ["/logos/uoft-cs.webp"],
     period: "Sept 2026 — Present",
     summary:
       "Migrating the graph viewer and editor to React on a Haskell + GraphViz backend for an academic planner used by thousands of students. Set up CI with Tasty, HLint and pre-commit hooks.",
@@ -46,7 +46,7 @@ export const experience: Experience[] = [
   {
     role: "UX & Strategy Consultant",
     org: "Autinerary · Riipen Labs",
-    logos: ["/logos/autinerary.webp", "/logos/riipen.webp"],
+    logos: ["/logos/autinerary.webp"],
     period: "Sept 2026",
     summary:
       "Designing accessible user journeys for a platform centralizing neurodivergent resources, services and community.",
@@ -54,7 +54,7 @@ export const experience: Experience[] = [
   {
     role: "Software Developer Intern",
     org: "MarkUs · U of T Computer Science",
-    logos: ["/logos/sds.png", "/logos/uoft-cs.webp"],
+    logos: ["/logos/uoft-cs.webp"],
     period: "May — Aug 2026",
     summary:
       "Shipped Rails + React features for an assignment and autotesting platform used across the university, and stabilized CI by fixing flaky, non-deterministic tests in Jest and RSpec.",
