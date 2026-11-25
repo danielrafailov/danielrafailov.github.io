@@ -25,12 +25,6 @@ export type Experience = {
 
 export const experience: Experience[] = [
   {
-    role: "Software Engineer Intern",
-    org: "TD · Incoming",
-    logos: ["/logos/td.webp"],
-    period: "Jan 4 — Apr 23, 2027",
-  },
-  {
     role: "Software Developer Intern",
     org: "Courseography · U of T Computer Science",
     logos: ["/logos/uoft-cs.webp"],
